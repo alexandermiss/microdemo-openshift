@@ -1,0 +1,3 @@
+Flask==1.1.2
+flask-redis
+waitress==2.0.0

@@ -1,0 +1,54 @@
+services:
+  flask-catalogs:
+    build:
+      context: ./catalogs
+      dockerfile: ./docker/Dockerfile
+    container_name: flask_catalogs
+    restart: always
+    environment: 
+      - REDIS_URL=redis://redis:6379
+    ports: 
+      - '5000:8081'
+    depends_on:
+      - redis-broker
+  flask-products:
+    build:
+      context: ./products
+      dockerfile: ./docker/Dockerfile
+    container_name: flask_products
+    restart: always
+    environment: 
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "5001:8081"
+    depends_on:
+      - redis-broker
+  flask-sales:
+    build:
+      context: ./sales
+      dockerfile: ./docker/Dockerfile
+    container_name: flask_sales
+    restart: always
+    environment: 
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "5002:8081"
+    depends_on:
+      - redis-broker
+  redis-broker: #cambiar a alpine
+    container_name: redis_broker
+    hostname: redis
+    image: redis
+    command: redis-server --appendonly yes
+    volumes:
+        - redis_data:/data
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+
+networks:
+  net_flask_apps:
+
+volumes:
+  redis_data:
